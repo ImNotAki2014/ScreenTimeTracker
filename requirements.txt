@@ -1,0 +1,3 @@
+nicegui
+requests
+pyobjc-framework-AppKit; sys_platform == 'darwin'
