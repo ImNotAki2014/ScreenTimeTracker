@@ -213,10 +213,10 @@ def main():
                             {'field': 'total', 'headerName': 'Total'}
                         ],
                         'rowData': get_summary_data(),
-                        'theme': 'ag-theme-alpine-dark'
-                    }).classes('h-40 mb-6')
+                    }).classes('ag-theme-alpine-dark h-40 mb-6')
                     def refresh_summary():
-                        summary_grid.update_row_data(get_summary_data())
+                        summary_grid.options['rowData'] = get_summary_data()
+                        summary_grid.update()
                     ui.button(
                         'Refresh',
                         icon='sync',
