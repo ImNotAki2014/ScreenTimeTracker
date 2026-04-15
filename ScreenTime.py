@@ -174,7 +174,7 @@ def main():
             ui.tab('Tracker', icon='timer')
             ui.tab('History', icon='analytics')
             ui.tab('Calculator', icon='calculate')
-        with ui.tab_panels(tabs, value='Tracker').classes('w-full bg-transparent'):
+        with ui.tab_panels(tabs, value='Tracker').classes('w-full bg-transparent') as tab_panels:
             with ui.tab_panel('Tracker'):
                 with ui.card().classes('glass-card'):
                     ui.label('Screen Time Tracker').classes('text-3xl font-black text-center w-full text-blue-400')
@@ -213,14 +213,27 @@ def main():
                             {'field': 'total', 'headerName': 'Total'}
                         ],
                         'rowData': get_summary_data(),
-                        'theme': 'ag-theme-alpine-dark'
-                    }).classes('h-40 mb-6')
-                    def refresh_summary():
-                        summary_grid.update_row_data(get_summary_data())
+                    }).classes('ag-theme-alpine-dark h-40 mb-6')
+                    ui.label('Session Log').classes('text-xl font-bold text-blue-200 mb-2')
+                    history_grid = ui.aggrid({
+                        'columnDefs': [
+                            {'field': 'user', 'headerName': 'User'},
+                            {'field': 'app', 'headerName': 'App'},
+                            {'field': 'time', 'headerName': 'Time'},
+                            {'field': 'date', 'headerName': 'Date'},
+                        ],
+                        'rowData': load_data(),
+                    }).classes('ag-theme-alpine-dark h-48 mb-6')
+                    def refresh_history():
+                        summary_grid.options['rowData'] = get_summary_data()
+                        summary_grid.update()
+                        history_grid.options['rowData'] = load_data()
+                        history_grid.update()
+                    tab_panels.on('update:modelValue', lambda e: refresh_history() if e.args == 'History' else None)
                     ui.button(
                         'Refresh',
                         icon='sync',
-                        on_click=refresh_summary
+                        on_click=refresh_history
                     ).classes('w-full mt-4').props('flat color=blue')
             with ui.tab_panel('Calculator'):
                 with ui.card().classes('glass-card w-full max-w-2xl'):
